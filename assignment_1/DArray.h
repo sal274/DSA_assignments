@@ -60,6 +60,8 @@ class DArray
         iterator end() { return &arr[sz]; }
         const_iterator end() const { return &arr[sz]; }
 
+        iterator erase(iterator pos);
+
         static const std::size_t SPARE_CAPACITY = 16;
 
     private:
@@ -117,6 +119,8 @@ DArray<T>& DArray<T>::operator=(DArray&& source)
     std::swap(sz, source.sz);
     std::swap(cap, source.cap);
     std::swap(arr, source.arr);
+
+    return *this;
 }
 
 template <class T>
@@ -151,6 +155,23 @@ void DArray<T>::push_back(T&& x)
 {
     if (sz == cap) reserve(sz * 2 + 1);
     arr[sz++] = std::move(x);
+}
+
+template <class T>
+typename DArray<T>::iterator DArray<T>::erase(iterator pos)
+{
+    iterator ret_val = pos;  // This will be the new position of the
+                             // element that follows the one to be
+                             // deleted
+    
+    iterator last = end();
+    while (pos != last)
+    {
+        std::swap(*pos, *pos++);  // x++ has higher precedence than *x
+    }
+    pop_back();
+
+    return ret_val;
 }
 
 template <class T>
