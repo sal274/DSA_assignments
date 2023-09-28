@@ -55,25 +55,25 @@ void Playlist::sort_title(bool ascending)
 void Playlist::sort_artist(bool ascending)
 {
     if (ascending) sort(1, false);
-    else sort(0, true);
+    else sort(1, true);
 }
 
 void Playlist::sort_album(bool ascending)
 {
     if (ascending) sort(2, false);
-    else sort(0, true);
+    else sort(2, true);
 }
 
 void Playlist::sort_duration(bool ascending)
 {
     if (ascending) sort(3, false);
-    else sort(0, true);
+    else sort(3, true);
 }
 
 void Playlist::sort_genre(bool ascending)
 {
     if (ascending) sort(4, false);
-    else sort(0, true);
+    else sort(4, true);
 }
 
 void Playlist::sort(int parameter, bool reverse)
@@ -104,7 +104,7 @@ void Playlist::sort(int parameter, bool reverse)
                 else
                 {
                     if (std::stoi(playlist[i][3])
-                            > std::stoi(playlist[i + 1][3]))
+                            < std::stoi(playlist[i + 1][3]))
                     {
                         sorted = false;
 

@@ -242,26 +242,111 @@ bool test_move_song(Playlist& l)
 
 bool test_sort_title(Playlist& l)
 {
+    l.sort_title();
+    if (l.get_song(1)[0] != "American Pie") return false;
+    if (l.get_song(2)[0] != "Changing of the Guards") return false;
+    if (l.get_song(3)[0] != "Diamonds And Rust") return false;
+    if (l.get_song(4)[0] != "Enfants d'hiver") return false;
+    if (l.get_song(5)[0] != "Famous Blue Raincoat") return false;
+    if (l.get_song(6)[0] != "Heroes") return false;
+    if (l.get_song(7)[0] != "Knockin' On Heaven's Door") return false;
+
+    l.sort_title(false);
+    if (l.get_song(7)[0] != "American Pie") return false;
+    if (l.get_song(6)[0] != "Changing of the Guards") return false;
+    if (l.get_song(5)[0] != "Diamonds And Rust") return false;
+    if (l.get_song(4)[0] != "Enfants d'hiver") return false;
+    if (l.get_song(3)[0] != "Famous Blue Raincoat") return false;
+    if (l.get_song(2)[0] != "Heroes") return false;
+    if (l.get_song(1)[0] != "Knockin' On Heaven's Door") return false;
     return true;
 }
 
 bool test_sort_artist(Playlist& l)
 {
+    l.sort_artist();
+    if (l.get_song(1)[1] != "Bob Dylan") return false;
+    if (l.get_song(2)[1] != "Bob Dylan") return false;
+    if (l.get_song(3)[1] != "David Bowie") return false;
+    if (l.get_song(4)[1] != "Don McLean") return false;
+    if (l.get_song(5)[1] != "Jane Birkin") return false;
+    if (l.get_song(6)[1] != "Joan Baez") return false;
+    if (l.get_song(7)[1] != "Leonard Cohen") return false;
+
+    l.sort_artist(false);
+    if (l.get_song(7)[1] != "Bob Dylan") return false;
+    if (l.get_song(6)[1] != "Bob Dylan") return false;
+    if (l.get_song(5)[1] != "David Bowie") return false;
+    if (l.get_song(4)[1] != "Don McLean") return false;
+    if (l.get_song(3)[1] != "Jane Birkin") return false;
+    if (l.get_song(2)[1] != "Joan Baez") return false;
+    if (l.get_song(1)[1] != "Leonard Cohen") return false;
     return true;
 }
 
 bool test_sort_album(Playlist& l)
 {
+    l.sort_album();
+    if (l.get_song(1)[2] != "American Pie") return false;
+    if (l.get_song(2)[2] != "Diamonds & Rust") return false;
+    if (l.get_song(3)[2] != "Enfants d'hiver") return false;
+    if (l.get_song(4)[2] != "Heroes") return false;
+    if (l.get_song(5)[2] != "Pat Garrett & Billy The Kid") return false;
+    if (l.get_song(6)[2] != "Songs Of Love And Hate") return false;
+    if (l.get_song(7)[2] != "Street-Legal") return false;
+
+    l.sort_album(false);
+    if (l.get_song(7)[2] != "American Pie") return false;
+    if (l.get_song(6)[2] != "Diamonds & Rust") return false;
+    if (l.get_song(5)[2] != "Enfants d'hiver") return false;
+    if (l.get_song(4)[2] != "Heroes") return false;
+    if (l.get_song(3)[2] != "Pat Garrett & Billy The Kid") return false;
+    if (l.get_song(2)[2] != "Songs Of Love And Hate") return false;
+    if (l.get_song(1)[2] != "Street-Legal") return false;
     return true;
 }
 
 bool test_sort_duration(Playlist& l)
 {
+    l.sort_duration();
+    if (l.get_song(1)[3] != "149") return false;
+    if (l.get_song(2)[3] != "224") return false;
+    if (l.get_song(3)[3] != "286") return false;
+    if (l.get_song(4)[3] != "310") return false;
+    if (l.get_song(5)[3] != "371") return false;
+    if (l.get_song(6)[3] != "397") return false;
+    if (l.get_song(7)[3] != "516") return false;
+
+    l.sort_duration(false);
+    if (l.get_song(7)[3] != "149") return false;
+    if (l.get_song(6)[3] != "224") return false;
+    if (l.get_song(5)[3] != "286") return false;
+    if (l.get_song(4)[3] != "310") return false;
+    if (l.get_song(3)[3] != "371") return false;
+    if (l.get_song(2)[3] != "397") return false;
+    if (l.get_song(1)[3] != "516") return false;
     return true;
 }
 
 bool test_sort_genre(Playlist& l)
 {
+    l.sort_genre();
+    if (l.get_song(1)[4] != "Blues") return false;
+    if (l.get_song(2)[4] != "Blues") return false;
+    if (l.get_song(3)[4] != "Rock") return false;
+    if (l.get_song(4)[4] != "Rock") return false;
+    if (l.get_song(5)[4] != "Rock") return false;
+    if (l.get_song(6)[4] != "Rock") return false;
+    if (l.get_song(7)[4] != "Rock") return false;
+
+    l.sort_genre(false);
+    if (l.get_song(7)[4] != "Blues") return false;
+    if (l.get_song(6)[4] != "Blues") return false;
+    if (l.get_song(5)[4] != "Rock") return false;
+    if (l.get_song(4)[4] != "Rock") return false;
+    if (l.get_song(3)[4] != "Rock") return false;
+    if (l.get_song(2)[4] != "Rock") return false;
+    if (l.get_song(1)[4] != "Rock") return false;
     return true;
 }
 
@@ -285,7 +370,7 @@ void init_playlist(Playlist& l)
 {
     // Set Playlist l to a set of values to prepare for testing
     l.clear();
-    l.add_song("Heroes", "David Bowie", "Single", "371", "Rock");
+    l.add_song("Heroes", "David Bowie", "Heroes", "371", "Rock");
     l.add_song("Famous Blue Raincoat", "Leonard Cohen",
         "Songs Of Love And Hate", "310", "Blues");
     l.add_song("American Pie", "Don McLean", "American Pie", "516", "Rock");
