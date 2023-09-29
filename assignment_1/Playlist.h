@@ -109,4 +109,4 @@ class Playlist
         void sort(int parameter, bool reverse);
 };
 
-#endif
+#endif  // PLAYLIST_H
