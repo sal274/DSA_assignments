@@ -52,9 +52,11 @@ class Playlist
         std::size_t size() const { return playlist.size(); }
         bool is_empty() const { return playlist.empty(); }
 
+        // Playlist reordering
         void move_song(std::size_t from, std::size_t to)
             { std::swap(playlist[from - 1], playlist[to - 1]); }
 
+        // Playlist sorting
         void sort_title(bool ascending = true);
         void sort_artist(bool ascending = true);
         void sort_album(bool ascending = true);

@@ -46,6 +46,7 @@ void Playlist::delete_song(std::size_t pos)
     playlist.erase(itr);
 }
 
+// The next six functions implement playlist sorting in various ways
 void Playlist::sort_title(bool ascending)
 {
     if (ascending) sort(0, false);
