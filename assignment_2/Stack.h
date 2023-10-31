@@ -188,6 +188,7 @@ void Stack<T>::pop()
         tail -> next = nullptr;
         delete temp;
     }
+    --sz;
 }
 
 #endif
