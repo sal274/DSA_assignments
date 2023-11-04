@@ -36,6 +36,7 @@ class InfixExpr
         void to_queue();
         void to_postfix();
         void eval();
+        void remove_whitespace();
 };
 
 #endif

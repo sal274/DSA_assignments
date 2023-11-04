@@ -5,6 +5,7 @@ Definition of class InfixExpr delcared in InfixExpr.h
 */
 
 #include <stdexcept>
+#include <algorithm>
 
 #include "InfixExpr.h"
 #include "Stack.h"
@@ -13,9 +14,13 @@ using std::string;
 using std::move;
 using std::invalid_argument;
 using std::size_t;
+using std::remove_if;
 
-InfixExpr::InfixExpr(const string& expr) : infix_expr_str{ expr }
+InfixExpr::InfixExpr(const string& expr)
 {
+    infix_expr_str = expr;
+    remove_whitespace();
+
     if (!valid()) throw invalid_argument(
         "InfixExpr constructor: invalid infix expression");
 
@@ -101,7 +106,63 @@ bool InfixExpr::valid() const
 
 void InfixExpr::to_queue()
 {
-    ;
+    size_t str_sz = infix_expr_str.size();
+    string token;
+    int token_sign = 1;
+    char c;
+    for (size_t i = 0; i < str_sz; ++i)
+    {
+        c = infix_expr_str[i];
+        
+        if (c == '(' || c == ')' || c == '*' || c == '/' || c == '^')
+        {
+            token = c;
+            token_queue.enqueue(token);
+        }
+        else if (c == '+' || c == '-')
+        {
+            if (i == 0 || (!isdigit(infix_expr_str[i - 1])
+                    && infix_expr_str[i - 1] != '('
+                    && infix_expr_str[i - 1] != ')'))
+            {
+                // + or - is unary
+                while (!isdigit(c))
+                {
+                    c == '+' ? token_sign *= 1 : token_sign *= -1;
+                    c = infix_expr_str[++i];
+                }
+
+                token = "";  // Prepare for new token
+                while (isdigit(c) || c == '.')
+                {
+                    token += c;
+                    c = infix_expr_str[++i];
+                }
+                if (token_sign == -1) token = '-' + token;
+                token_queue.enqueue(token);
+                --i;  // For loop will increment again
+            }
+            else
+            {
+                // + or - is binary
+                token = c;
+                token_queue.enqueue(token);
+            }
+        }
+        else
+        {
+            // Token is a number
+
+            token = "";  // Prepare for new token
+            while (isdigit(c) || c == '.')
+            {
+                token += c;
+                c = infix_expr_str[++i];
+            }
+            token_queue.enqueue(token);
+            --i;  // For loop will increment again
+        }
+    }
 }
 
 void InfixExpr::to_postfix()
@@ -109,3 +170,9 @@ void InfixExpr::to_postfix()
 
 void InfixExpr::eval()
 {}
+
+void InfixExpr::remove_whitespace()
+{
+    infix_expr_str.erase(remove_if(infix_expr_str.begin(),
+        infix_expr_str.end(), isspace), infix_expr_str.end());
+}
