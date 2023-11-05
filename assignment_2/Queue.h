@@ -1,4 +1,12 @@
 /*
+Queue.h
+
+Queue.h declares class template Queue
+
+Class template Queue represents a queue data structure
+*/
+
+/*
 DSA Assignment 2
 
 Salman Abdullah
@@ -7,20 +15,12 @@ Salman Abdullah
 11 October 2023
 */
 
-/*
-Queue.h
-
-Implements class template Queue
-
-Class template Queue represents a queue data structure
-*/
-
 #ifndef QUEUE_H
 #define QUEUE_H
 
 #include <cstddef>
-#include <algorithm>
 #include <utility>
+#include <algorithm>
 #include <stdexcept>
 
 #include <iostream>

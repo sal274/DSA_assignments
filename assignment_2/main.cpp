@@ -1,16 +1,22 @@
 /*
+main.cpp
+
+Driver program for converting from infix to postfix notation.
+
+Get an arithmetic expression from the user, convert it to postfix and
+evaluate it. Print the expression in postfix notation and the result.
+
+Uses class InfixExpr declared in InfixExpr.h to represent and work on
+an infix arithmetic expression.
+*/
+
+/*
 DSA Assignment 2
 
 Salman Abdullah
 221478 BSCS IIIC
 
 11 October 2023
-*/
-
-/*
-main.cpp
-
-Driver program for InfixExpr class declared in InfixExpr.h
 */
 
 #include "InfixExpr.h"

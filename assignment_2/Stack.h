@@ -1,18 +1,18 @@
 /*
+Stack.h
+
+Stack.h declares class template Stack
+
+Class template Stack represents a stack data structure
+*/
+
+/*
 DSA Assignment 2
 
 Salman Abdullah
 221478 BSCS IIIC
 
 11 October 2023
-*/
-
-/*
-Stack.h
-
-Implements class Stack
-
-Class Stack represents a stack data structure
 */
 
 #ifndef STACK_H

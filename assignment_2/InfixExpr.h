@@ -1,18 +1,18 @@
 /*
+InfixExpr.h
+
+Declares class InfixExpr
+
+Class InfixExpr represents an infix arithmetic expression
+*/
+
+/*
 DSA Assignment 2
 
 Salman Abdullah
 221478 BSCS IIIC
 
 11 October 2023
-*/
-
-/*
-InfixExpr.h
-
-Declares class InfixExpr
-
-Class InfixExpr represents an infix arithmetic expression
 */
 
 #ifndef INFIXEXPR_H

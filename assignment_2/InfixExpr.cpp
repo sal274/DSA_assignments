@@ -1,16 +1,16 @@
 /*
+InfixExpr.cpp
+
+Definition of class InfixExpr delcared in InfixExpr.h
+*/
+
+/*
 DSA Assignment 2
 
 Salman Abdullah
 221478 BSCS IIIC
 
 11 October 2023
-*/
-
-/*
-InfixExpr.cpp
-
-Definition of class InfixExpr delcared in InfixExpr.h
 */
 
 #include <stdexcept>
