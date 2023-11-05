@@ -18,8 +18,12 @@ class InfixExpr
 {
     public:
 
-        InfixExpr(const std::string& expr);
-        InfixExpr(std::string&& expr);
+        InfixExpr();
+        explicit InfixExpr(const std::string& expr);
+        explicit InfixExpr(std::string&& expr);
+
+        void assign(const std::string& expr);
+        void assign(std::string&& expr);
 
         std::string postfix() const { return postfix_expr_str; }
         std::string infix() const { return postfix_expr_str; }
@@ -29,12 +33,14 @@ class InfixExpr
 
         std::string infix_expr_str;
         std::string postfix_expr_str;
-        Queue<std::string> token_queue;
+        Queue<std::string> infix_token_queue;
+        Queue<std::string> postfix_token_queue;
         double result;
 
         bool valid() const;
-        void to_queue();
-        void to_postfix();
+        void to_infix_queue();
+        void to_postfix_queue();
+        void to_postfix_str();
         void eval();
         void remove_whitespace();
 };

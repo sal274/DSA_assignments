@@ -6,17 +6,48 @@ Definition of class InfixExpr delcared in InfixExpr.h
 
 #include <stdexcept>
 #include <algorithm>
+#include <cmath>
 
 #include "InfixExpr.h"
 #include "Stack.h"
 
 using std::string;
-using std::move;
 using std::invalid_argument;
 using std::size_t;
+using std::pow;
+using std::move;
 using std::remove_if;
 
-InfixExpr::InfixExpr(const string& expr)
+InfixExpr::InfixExpr()
+{}
+
+InfixExpr::InfixExpr(const string& expr) : infix_expr_str{ expr }
+{
+    remove_whitespace();
+
+    if (!valid()) throw invalid_argument(
+        "InfixExpr constructor: invalid infix expression");
+
+    to_infix_queue();  // Store all tokens in infix expression as a queue
+    to_postfix_queue();  // Store all tokens in postfix expresstion as a queue
+    to_postfix_str();  // Store postfix string
+    eval();  // Evaluate postfix expression and store the result
+}
+
+InfixExpr::InfixExpr(string&& expr) : infix_expr_str{ move(expr) }
+{
+    remove_whitespace();
+
+    if (!valid()) throw invalid_argument(
+        "InfixExpr constructor: invalid infix expression");
+
+    to_infix_queue();  // Store all tokens in infix expression as a queue
+    to_postfix_queue();  // Store all tokens in postfix expresstion as a queue
+    to_postfix_str();  // Store postfix string
+    eval();  // Evaluate postfix expression and store the result
+}
+
+void InfixExpr::assign(const string& expr)
 {
     infix_expr_str = expr;
     remove_whitespace();
@@ -24,16 +55,24 @@ InfixExpr::InfixExpr(const string& expr)
     if (!valid()) throw invalid_argument(
         "InfixExpr constructor: invalid infix expression");
 
-    to_postfix();
-    to_queue();
-    eval();
+    to_infix_queue();  // Store all tokens in infix expression as a queue
+    to_postfix_queue();  // Store all tokens in postfix expresstion as a queue
+    to_postfix_str();  // Store postfix string
+    eval();  // Evaluate postfix expression and store the result
 }
 
-InfixExpr::InfixExpr(string&& expr) : infix_expr_str{ move(expr) }
+void InfixExpr::assign(string&& expr)
 {
-    to_postfix();
-    to_queue();
-    eval();
+    infix_expr_str = move(expr);
+    remove_whitespace();
+
+    if (!valid()) throw invalid_argument(
+        "InfixExpr constructor: invalid infix expression");
+
+    to_infix_queue();  // Store all tokens in infix expression as a queue
+    to_postfix_queue();  // Store all tokens in postfix expresstion as a queue
+    to_postfix_str();  // Store postfix string
+    eval();  // Evaluate postfix expression and store the result
 }
 
 bool InfixExpr::valid() const
@@ -104,7 +143,7 @@ bool InfixExpr::valid() const
     return true;
 }
 
-void InfixExpr::to_queue()
+void InfixExpr::to_infix_queue()
 {
     size_t str_sz = infix_expr_str.size();
     string token;
@@ -117,7 +156,7 @@ void InfixExpr::to_queue()
         if (c == '(' || c == ')' || c == '*' || c == '/' || c == '^')
         {
             token = c;
-            token_queue.enqueue(token);
+            infix_token_queue.enqueue(token);
         }
         else if (c == '+' || c == '-')
         {
@@ -139,14 +178,14 @@ void InfixExpr::to_queue()
                     c = infix_expr_str[++i];
                 }
                 if (token_sign == -1) token = '-' + token;
-                token_queue.enqueue(token);
+                infix_token_queue.enqueue(token);
                 --i;  // For loop will increment again
             }
             else
             {
                 // + or - is binary
                 token = c;
-                token_queue.enqueue(token);
+                infix_token_queue.enqueue(token);
             }
         }
         else
@@ -159,17 +198,190 @@ void InfixExpr::to_queue()
                 token += c;
                 c = infix_expr_str[++i];
             }
-            token_queue.enqueue(token);
+            infix_token_queue.enqueue(token);
             --i;  // For loop will increment again
         }
     }
 }
 
-void InfixExpr::to_postfix()
-{}
+void InfixExpr::to_postfix_queue()
+{
+    Stack<string> op_stack;
+    string top_op;
+    Queue<std::string> infix = infix_token_queue;
+    string token;
+    while (!infix.empty())
+    {
+        token = infix.front();
+
+        if (token.size() > 1 || isdigit(token[0]))
+        {
+            // Token is a number
+            postfix_token_queue.enqueue(token);
+        }
+        else
+        {
+            if (token == "+" || token == "-")
+            {
+                if (op_stack.empty())
+                    op_stack.push(token);
+                else
+                {
+                    top_op = op_stack.top();
+
+                    if (top_op == "(")
+                        op_stack.push(token);
+                    else
+                    {
+                        while (top_op != "(" && op_stack.size() > 0)
+                        {
+                            postfix_token_queue.enqueue(top_op);
+                            op_stack.pop();
+                            try
+                            {
+                                top_op = op_stack.top();   
+                            }
+                            catch(std::out_of_range)
+                            {
+                                break;
+                            }
+                        }
+                        op_stack.push(token);
+                    }
+                }
+            }
+            else if (token == "*" || token == "/")
+            {
+                if (op_stack.empty())
+                    op_stack.push(token);
+                else
+                {
+                    top_op = op_stack.top();
+
+                    if (top_op == "(")
+                        op_stack.push(token);
+                    else
+                    {
+                        if (top_op == "+" || top_op == "-")
+                            op_stack.push(token);
+                        else if (top_op == "*" || top_op == "/"
+                                || top_op == "^")
+                        {
+                            while (top_op != "(" && top_op != "+"
+                                    && top_op != "-" && op_stack.size() > 0)
+                            {
+                                postfix_token_queue.enqueue(top_op);
+                                op_stack.pop();
+                                try
+                                {
+                                    top_op = op_stack.top();   
+                                }
+                                catch(std::out_of_range)
+                                {
+                                    break;
+                                }
+                            }
+                            op_stack.push(token);
+                        }
+                    }
+                }
+            }
+            else if (token == "^")
+                op_stack.push(token);
+            else if (token == "(")
+                op_stack.push(token);
+            else if (token == ")")
+            {
+                top_op = op_stack.top();
+
+                while (top_op != "(")
+                {
+                    postfix_token_queue.enqueue(top_op);
+                    op_stack.pop();
+                    top_op = op_stack.top();
+                }
+
+                // Discard left parenthesis
+                op_stack.pop();
+            }
+        }
+
+        // Move to the next token
+        infix.dequeue();
+    }
+
+    // Push the remaining operators on the output queue
+    while (!op_stack.empty())
+    {
+        postfix_token_queue.enqueue(op_stack.top());
+        op_stack.pop();
+    }
+}
+
+void InfixExpr::to_postfix_str()
+{
+    // (Note: use a linked list instead of a queue; no copying will
+    // be required)
+    Queue<string> postfix_q = postfix_token_queue;
+    while (!postfix_q.empty())
+    {
+        postfix_expr_str += postfix_q.front();
+        postfix_q.dequeue();
+    }
+}
 
 void InfixExpr::eval()
-{}
+{
+    // Use linked lists for traversal without copying
+    Queue<string> postfix_q = postfix_token_queue;
+    Stack<double> result;
+    string token;
+    char op;
+    double temp;
+    while (!postfix_q.empty())
+    {
+        token = postfix_q.front();
+        if (token.size() > 1 || isdigit(token[0]))
+        {
+            // Token is a number
+            result.push(std::stod(token));
+        }
+        else
+        {
+            op = token[0];
+
+            switch(op)
+            {
+                case '+':
+                    temp = result.top();
+                    result.pop();
+                    result.top() += temp;
+                    break;
+                case '-':
+                    temp = result.top();
+                    result.pop();
+                    result.top() -= temp;
+                    break;
+                case '*':
+                    temp = result.top();
+                    result.pop();
+                    result.top() *= temp;
+                    break;
+                case '/':
+                    temp = result.top();
+                    result.pop();
+                    result.top() /= temp;
+                    break;
+                case '^':
+                    temp = result.top();
+                    result.pop();
+                    result.top() = pow(result.top(), temp);
+                    break;
+            }
+        }
+        postfix_q.dequeue();
+    }
+}
 
 void InfixExpr::remove_whitespace()
 {
