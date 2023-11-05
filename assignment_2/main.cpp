@@ -1,4 +1,13 @@
 /*
+DSA Assignment 2
+
+Salman Abdullah
+221478 BSCS IIIC
+
+11 October 2023
+*/
+
+/*
 main.cpp
 
 Driver program for InfixExpr class declared in InfixExpr.h
@@ -17,6 +26,7 @@ int main()
 {
     InfixExpr expr;
     string expr_str;
+    string choice;
     while (true)
     {
         cout << "Enter an infix expression: ";
@@ -34,6 +44,10 @@ int main()
 
         cout << "In postfix: " << expr.postfix() << '\n';
         cout << "Result: " << expr.evaluate() << '\n';
+
+        cout << "Do you want to continue? (y/n): ";
+        getline(cin, choice);
+        if (choice == "n") break;
     }
     return 0;
 }

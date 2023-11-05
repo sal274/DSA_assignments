@@ -1,4 +1,13 @@
 /*
+DSA Assignment 2
+
+Salman Abdullah
+221478 BSCS IIIC
+
+11 October 2023
+*/
+
+/*
 Stack.h
 
 Implements class Stack
@@ -13,6 +22,8 @@ Class Stack represents a stack data structure
 #include <utility>
 #include <algorithm>
 #include <stdexcept>
+
+#include <iostream>
 
 template <class T>
 class Stack
@@ -38,6 +49,10 @@ class Stack
         void push(T&& val);
 
         void pop();
+
+        void clear();
+
+        void print() const;  // For debugging
 
     private:
 
@@ -189,6 +204,41 @@ void Stack<T>::pop()
         delete temp;
     }
     --sz;
+}
+
+template <class T>
+void Stack<T>::clear()
+{
+    Node* temp = head;
+    while (temp)
+    {
+        head = head -> next;
+        delete temp;
+        temp = head;
+    }
+
+    head = nullptr;
+    tail = nullptr;
+    sz = 0;
+}
+
+// For debugging
+template <class T>
+void Stack<T>::print() const
+{
+    if (!head)
+    {
+        std::cout << "[]\n";
+        return;
+    }
+    Node* trav = head;
+    std::cout << "[";
+    while (trav)
+    {
+        if (trav == tail) std::cout << trav -> val << "]\n";
+        else std::cout << trav -> val << ", ";
+        trav = trav -> next;
+    }
 }
 
 #endif

@@ -1,4 +1,13 @@
 /*
+DSA Assignment 2
+
+Salman Abdullah
+221478 BSCS IIIC
+
+11 October 2023
+*/
+
+/*
 InfixExpr.cpp
 
 Definition of class InfixExpr delcared in InfixExpr.h
@@ -49,6 +58,12 @@ InfixExpr::InfixExpr(string&& expr) : infix_expr_str{ move(expr) }
 
 void InfixExpr::assign(const string& expr)
 {
+    // Clear everything
+    infix_expr_str.clear();
+    postfix_expr_str.clear();
+    infix_token_queue.clear();
+    postfix_token_queue.clear();
+
     infix_expr_str = expr;
     remove_whitespace();
 
@@ -121,6 +136,8 @@ bool InfixExpr::valid() const
                     && infix_expr_str[i + 1] != '-'))
                 return false;
             if (!isdigit(infix_expr_str[i - 1])
+                    && infix_expr_str[i - 1] != '('
+                    && infix_expr_str[i - 1] != ')'
                     && (!isdigit(infix_expr_str[i + 1]))
                     && infix_expr_str[i + 1] != '+'
                     && infix_expr_str[i + 1] != '-')
@@ -161,17 +178,22 @@ void InfixExpr::to_infix_queue()
         else if (c == '+' || c == '-')
         {
             if (i == 0 || (!isdigit(infix_expr_str[i - 1])
-                    && infix_expr_str[i - 1] != '('
                     && infix_expr_str[i - 1] != ')'))
             {
                 // + or - is unary
+
+                // Prepare for new token
+                token_sign = 1;
+
                 while (!isdigit(c))
                 {
                     c == '+' ? token_sign *= 1 : token_sign *= -1;
                     c = infix_expr_str[++i];
                 }
 
-                token = "";  // Prepare for new token
+                // Prepare for new token
+                token = "";
+
                 while (isdigit(c) || c == '.')
                 {
                     token += c;
@@ -334,7 +356,7 @@ void InfixExpr::eval()
 {
     // Use linked lists for traversal without copying
     Queue<string> postfix_q = postfix_token_queue;
-    Stack<double> result;
+    Stack<double> result_stack;
     string token;
     char op;
     double temp;
@@ -344,7 +366,7 @@ void InfixExpr::eval()
         if (token.size() > 1 || isdigit(token[0]))
         {
             // Token is a number
-            result.push(std::stod(token));
+            result_stack.push(std::stod(token));
         }
         else
         {
@@ -353,34 +375,35 @@ void InfixExpr::eval()
             switch(op)
             {
                 case '+':
-                    temp = result.top();
-                    result.pop();
-                    result.top() += temp;
+                    temp = result_stack.top();
+                    result_stack.pop();
+                    result_stack.top() += temp;
                     break;
                 case '-':
-                    temp = result.top();
-                    result.pop();
-                    result.top() -= temp;
+                    temp = result_stack.top();
+                    result_stack.pop();
+                    result_stack.top() -= temp;
                     break;
                 case '*':
-                    temp = result.top();
-                    result.pop();
-                    result.top() *= temp;
+                    temp = result_stack.top();
+                    result_stack.pop();
+                    result_stack.top() *= temp;
                     break;
                 case '/':
-                    temp = result.top();
-                    result.pop();
-                    result.top() /= temp;
+                    temp = result_stack.top();
+                    result_stack.pop();
+                    result_stack.top() /= temp;
                     break;
                 case '^':
-                    temp = result.top();
-                    result.pop();
-                    result.top() = pow(result.top(), temp);
+                    temp = result_stack.top();
+                    result_stack.pop();
+                    result_stack.top() = pow(result_stack.top(), temp);
                     break;
             }
         }
         postfix_q.dequeue();
     }
+    result = result_stack.top();
 }
 
 void InfixExpr::remove_whitespace()

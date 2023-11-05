@@ -1,4 +1,13 @@
 /*
+DSA Assignment 2
+
+Salman Abdullah
+221478 BSCS IIIC
+
+11 October 2023
+*/
+
+/*
 Queue.h
 
 Implements class template Queue
@@ -14,7 +23,7 @@ Class template Queue represents a queue data structure
 #include <utility>
 #include <stdexcept>
 
-#include <iostream>  // Debugging
+#include <iostream>
 
 template <class T>
 class Queue
@@ -44,7 +53,9 @@ class Queue
 
         void dequeue();
 
-        void print() const;  // Debugging
+        void clear();
+
+        void print() const;  // For debugging
 
     private:
 
@@ -211,6 +222,23 @@ void Queue<T>::dequeue()
     --sz;
 }
 
+template <class T>
+void Queue<T>::clear()
+{
+    Node* temp = head;
+    while (temp)
+    {
+        head = head -> next;
+        delete temp;
+        temp = head;
+    }
+
+    head = nullptr;
+    tail = nullptr;
+    sz = 0;
+}
+
+// For debugging
 template <class T>
 void Queue<T>::print() const
 {

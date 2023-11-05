@@ -1,4 +1,13 @@
 /*
+DSA Assignment 2
+
+Salman Abdullah
+221478 BSCS IIIC
+
+11 October 2023
+*/
+
+/*
 InfixExpr.h
 
 Declares class InfixExpr
