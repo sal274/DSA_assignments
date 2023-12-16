@@ -1,4 +1,15 @@
 /*
+DSA Assignment 3
+
+Ateeq Ur Rehman 221475
+Salman Abdullah 221478
+
+BS CS IIIC
+
+3 December 2023
+*/
+
+/*
 test_running_time.cpp
 
 Test whether Treap operations consistently provide logarithmic
