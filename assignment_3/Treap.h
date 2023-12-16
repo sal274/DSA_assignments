@@ -16,11 +16,17 @@ class Treap
 {
     public:
 
-        Treap();
-        ~Treap();
+        Treap() : root{ nullptr }, sz{ 0 }
+            {}
 
-        std::size_t size() const { return sz; }
-        bool empty() const { return sz == 0; }
+        ~Treap()
+            { clear(root); }
+
+        std::size_t size() const
+            { return sz; }
+        
+        bool empty() const
+            { return sz == 0; }
 
         bool contains(const Comparable& el) const
             { return contains(root, el); }
@@ -55,7 +61,7 @@ class Treap
         void insert(Node*& p, Comparable&& el);
         void remove(Node*& p, const Comparable& el);
         void restructure(Node*& p);
-        Node* find_min(Node* p) const;
+        void remove_min(Node*& p, Comparable& min_val);
         void clear(Node*& p);
 
         // For debugging
@@ -85,16 +91,6 @@ struct Treap<Comparable>::Node
         priority{ pr }
     {}
 };
-
-template <class Comparable>
-Treap<Comparable>::Treap() : root{ nullptr }, sz{ 0 }
-{}
-
-template <class Comparable>
-Treap<Comparable>::~Treap()
-{
-    clear(root);
-}
 
 template <class Comparable>
 void Treap<Comparable>::clear(Node*& p)
@@ -145,11 +141,7 @@ void Treap<Comparable>::remove(Node*& p, const Comparable& el)
     if (!p) return;
     if (el < p -> element) remove(p -> left, el);
     else if (p -> element < el) remove(p -> right, el);
-    else if ((p -> left) && (p -> right))
-    {
-        p -> element = find_min(p -> right) -> element;
-        remove(p -> right, p -> element);
-    }
+    else if ((p -> left) && (p -> right)) remove_min(p -> right, p -> element);
     else
     {
         Node* old_node = p;
@@ -170,17 +162,24 @@ void Treap<Comparable>::restructure(Node*& p)
         rotate_left(p);
 }
 
+// Remove and store the minimum value in the tree with root p in min_val
 template <class Comparable>
-typename Treap<Comparable>::Node* Treap<Comparable>::find_min(Node* p) const
+void Treap<Comparable>::remove_min(Node*& p, Comparable& min_val)
 {
-    if (!p) return nullptr;
-    if (!(p -> left)) return p;
-    return find_min(p -> left);
+    if (!(p -> left))
+    {
+        Node* old_node = p;
+        min_val = std::move(old_node -> element);
+        p = (p -> left) ? p -> left : p -> right;
+        delete old_node;
+    }
+    return remove_min(p -> left, min_val);
 }
 
 template <class Comparable>
 void Treap<Comparable>::rotate_left(Node*& p)
 {
+    if (!p) return;
     Node* temp = p -> right;
     p -> right = temp -> left;
     temp -> left = p;
@@ -190,6 +189,7 @@ void Treap<Comparable>::rotate_left(Node*& p)
 template <class Comparable>
 void Treap<Comparable>::rotate_right(Node*& p)
 {
+    if (!p) return;
     Node* temp = p -> left;
     p -> left = temp -> right;
     temp -> right = p;

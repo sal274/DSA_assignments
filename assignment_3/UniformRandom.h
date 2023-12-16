@@ -26,6 +26,7 @@ class UniformRandom
     private:
 
         std::mt19937 generator;
+
         static int current_time_seconds()
         {
             auto now = std::chrono::high_resolution_clock::now(
