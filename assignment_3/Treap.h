@@ -83,10 +83,6 @@ struct Treap<Comparable>::Node
 
     std::size_t priority;
 
-    Node() : left{ nullptr }, right{ nullptr },
-        priority{ ULONG_LONG_MAX }
-    {}
-
     Node(const Comparable& el, Node* lt, Node* rt, std::size_t pr)
         : element{ el }, left{ lt }, right{ rt }, priority{ pr }
     {}
