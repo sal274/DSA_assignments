@@ -22,6 +22,11 @@ class Treap
         ~Treap()
             { clear(root); }
 
+        Treap(const Treap& source) = delete;
+        Treap(Treap&& source) = delete;
+        Treap& operator=(const Treap& source) = delete;
+        Treap& operator=(Treap&& source) = delete;
+
         std::size_t size() const
             { return sz; }
         
@@ -32,13 +37,13 @@ class Treap
             { return contains(root, el); }
 
         void insert(const Comparable& el)
-            { ++sz; return insert(root, el); }
+            { insert(root, el); }
 
         void insert(Comparable&& el)
-            { ++sz; return insert(root, std::move(el)); }
+            { insert(root, std::move(el)); }
     
         void remove(const Comparable& el)
-            { --sz; return remove(root, el); }
+            { remove(root, el); }
 
         void clear()
             { clear(root); }
@@ -116,10 +121,14 @@ bool Treap<Comparable>::contains(Node* p, const Comparable& el) const
 template <class Comparable>
 void Treap<Comparable>::insert(Node*& p, const Comparable& el)
 {
-    if (!p) p = new Node(el, nullptr, nullptr,
-        rand_nums.rand_int() % (sz * sz * sz));
-    else if (el < p -> element) return insert(p -> left, el);
-    else if (p -> element < el) return insert(p -> right, el);
+    if (!p)
+    {
+        p = new Node(el, nullptr, nullptr,
+            rand_nums.rand_int() % (sz > 10000 ? (sz * sz) : 10000));
+        ++sz;
+    }
+    else if (el < p -> element) insert(p -> left, el);
+    else if (p -> element < el) insert(p -> right, el);
     else ;  // Duplicate value
     restructure(p);
 }
@@ -127,10 +136,14 @@ void Treap<Comparable>::insert(Node*& p, const Comparable& el)
 template <class Comparable>
 void Treap<Comparable>::insert(Node*& p, Comparable&& el)
 {
-    if (!p) p = new Node(std::move(el), nullptr, nullptr,
-        rand_nums.rand_int() % (sz * sz * sz));
-    else if (el < p -> element) return insert(p -> left, el);
-    else if (p -> element < el) return insert(p -> right, el);
+    if (!p)
+    {
+        p = new Node(std::move(el), nullptr, nullptr,
+            rand_nums.rand_int() % (sz > 10000 ? (sz * sz) : 10000));
+        ++sz;
+    }
+    else if (el < p -> element) insert(p -> left, el);
+    else if (p -> element < el) insert(p -> right, el);
     else ;  // Duplicate value
     restructure(p);
 }
@@ -147,6 +160,7 @@ void Treap<Comparable>::remove(Node*& p, const Comparable& el)
         Node* old_node = p;
         p = (p -> left) ? p -> left : p -> right;
         delete old_node;
+        --sz;
     }
     restructure(p);
 }
@@ -170,10 +184,12 @@ void Treap<Comparable>::remove_min(Node*& p, Comparable& min_val)
     {
         Node* old_node = p;
         min_val = std::move(old_node -> element);
-        p = (p -> left) ? p -> left : p -> right;
+        p = p -> right;
         delete old_node;
+        --sz;
     }
-    return remove_min(p -> left, min_val);
+    else remove_min(p -> left, min_val);
+    restructure(p);
 }
 
 template <class Comparable>
@@ -201,6 +217,12 @@ void Treap<Comparable>::rotate_right(Node*& p)
 template <class Comparable>
 std::ostream& Treap<Comparable>::print(Node* p, std::ostream& out) const
 {
+    if (sz == 0)
+    {
+        out << "(empty)\n";
+        return out;
+    }
+
     if (p)
     {
         print(p -> left, out);

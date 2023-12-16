@@ -1,27 +1,71 @@
 /*
 test_Treap.cpp
-*/
 
-#include <iostream>
+Test the public member functions of the Treap class
+*/
 
 #include "../Treap.h"
 
-using std::cout;
+#include <iostream>
+
+using namespace std;
 
 int main()
 {
-    Treap<int> treap;
-    for (int i = 10; i > 0; --i) treap.insert(i);
-    cout << treap.size() << '\n';
-    treap.print(cout);
-    if (treap.contains(100)) cout << "Contains 100\n";
-    else cout << "Does not contain 100\n";
+    Treap<int> t;
 
-    treap.remove(6);
-    treap.print(cout);
-    if (treap.contains(6)) cout << "Something is wrong\n";
-    treap.insert(6);
-    treap.print(cout);
-    if (treap.contains(6)) cout << "It might be working\n";
+    cout << "Print empty treap:\n";
+    t.print(cout);
+    cout << "Size: " << t.size() << '\n';
+
+    cout << "\nInsert 4:\n";
+    t.insert(4);
+    t.print(cout);
+    cout << "Size: " << t.size() << '\n';
+
+    cout << "\nDelete 4:\n";
+    t.remove(4);
+    t.print(cout);
+    cout << "Size: " << t.size() << '\n';
+
+    cout << "\nInsert 4:\n";
+    t.insert(4);
+    t.print(cout);
+    cout << "Size: " << t.size() << '\n';
+
+    cout << "\nDelete 100:\n";
+    t.remove(100);
+    t.print(cout);
+    cout << "Size: " << t.size() << '\n';
+
+    cout << "\nInsert 4:\n";
+    t.insert(4);
+    t.print(cout);
+    cout << "Size: " << t.size() << '\n';
+
+    cout << "\nInsert 8:\n";
+    t.insert(8);
+    t.print(cout);
+    cout << "Size: " << t.size() << '\n';
+
+    cout << "\nInsert 12:\n";
+    t.insert(12);
+    t.print(cout);
+    cout << "Size: " << t.size() << '\n';
+
+    cout << "\nInsert 0:\n";
+    t.insert(0);
+    t.print(cout);
+    cout << "Size: " << t.size() << '\n';
+
+    cout << "\nDelete 8:\n";
+    t.remove(8);
+    t.print(cout);
+    cout << "Size: " << t.size() << '\n';
+
+    cout << "\nDelete 4:\n";
+    t.remove(4);
+    t.print(cout);
+    cout << "Size: " << t.size() << '\n';
     return 0;
 }
